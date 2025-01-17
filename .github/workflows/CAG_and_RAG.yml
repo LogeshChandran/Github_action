@@ -30,15 +30,17 @@ jobs:
 
     # Install Dependencies
     - name: Install Dependencies
+      working-directory: ./CAG
       run: |
-        cd CAG
-        python -m pip install --upgrade pip
+        python -m venv venv
+        source venv/bin/activate
+        pip install --upgrade pip
         pip install -r requirements.txt
 
     # Download Required Datasets
     - name: Download Datasets
+      working-directory: ./CAG
       run: |
-        cd CAG
         sh ./downloads.sh
 
     # Set Up Environment Variables
@@ -50,12 +52,12 @@ jobs:
 
     # Run CAG Experiment
     - name: Run CAG Experiment
+      working-directory: ./CAG
       env:
         GOOGLE_API_KEY: ${{ env.GOOGLE_API_KEY }}
         OPENAI_API_KEY: ${{ env.OPENAI_API_KEY }}
         HF_TOKEN: ${{ env.HF_TOKEN }}
       run: |
-        cd CAG
         python ./kvcache.py \
           --kvcache file \
           --dataset "squad-train" \
@@ -69,12 +71,12 @@ jobs:
 
     # Run RAG Experiment
     - name: Run RAG Experiment
+      working-directory: ./CAG
       env:
         GOOGLE_API_KEY: ${{ env.GOOGLE_API_KEY }}
         OPENAI_API_KEY: ${{ env.OPENAI_API_KEY }}
         HF_TOKEN: ${{ env.HF_TOKEN }}
       run: |
-        cd CAG
         python ./rag.py \
           --index "bm25" \
           --dataset "hotpotqa-train" \
